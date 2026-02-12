@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HospitalCheckupSystem.Application\HospitalCheckupSystem.Application.csproj" />
+    <ProjectReference Include="..\HospitalCheckupSystem.Domain\HospitalCheckupSystem.Domain.csproj" />
     <ProjectReference Include="..\HospitalCheckupSystem.Infrastructure\HospitalCheckupSystem.Infrastructure.csproj" />
   </ItemGroup>
 
