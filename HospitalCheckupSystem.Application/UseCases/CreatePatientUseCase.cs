@@ -1,4 +1,5 @@
-﻿using HospitalCheckupSystem.Application.DTOs;
+﻿using FluentValidation;
+using HospitalCheckupSystem.Application.DTOs;
 using HospitalCheckupSystem.Domain.Entities;
 using HospitalCheckupSystem.Domain.Interfaces;
 
@@ -8,17 +9,24 @@ public class CreatePatientUseCase
 {
     private readonly IPatientRepository _patientRepository;
     private readonly IMrnGenerator _mrnGenerator;
+    private readonly IValidator<CreatePatientRequest> _validator;
 
     public CreatePatientUseCase(
         IPatientRepository patientRepository,
-        IMrnGenerator mrnGenerator)
+        IMrnGenerator mrnGenerator,
+        IValidator<CreatePatientRequest> validator)
     {
         _patientRepository = patientRepository;
         _mrnGenerator = mrnGenerator;
+        _validator = validator;
     }
 
     public async Task<CreatePatientResponse> ExecuteAsync(CreatePatientRequest request)
     {
+        var validation = await _validator.ValidateAsync(request);
+        if (!validation.IsValid)
+            throw new ValidationException(validation.Errors);
+
         var sequence = await _patientRepository.GetNextSequenceAsync();
         var mrn = _mrnGenerator.Generate(sequence);
 

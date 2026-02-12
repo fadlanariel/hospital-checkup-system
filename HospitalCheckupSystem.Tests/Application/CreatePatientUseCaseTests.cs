@@ -1,10 +1,13 @@
-﻿using Xunit;
-using Moq;
-using FluentAssertions;
+﻿using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using HospitalCheckupSystem.Application.DTOs;
+using HospitalCheckupSystem.Application.UseCases;
+using HospitalCheckupSystem.Application.Validators;
 using HospitalCheckupSystem.Domain.Entities;
 using HospitalCheckupSystem.Domain.Interfaces;
-using HospitalCheckupSystem.Application.UseCases;
+using Moq;
+using Xunit;
 
 namespace HospitalCheckupSystem.Tests.Application;
 
@@ -23,10 +26,13 @@ public class CreatePatientUseCaseTests
             .Returns(Task.CompletedTask);
 
         var mrnGen = new FakeMrnGenerator();
+        var validator = new CreatePatientRequestValidator();
 
         var useCase = new CreatePatientUseCase(
             repoMock.Object,
-            mrnGen);
+            mrnGen,
+            validator);
+
 
         var request = new CreatePatientRequest
         {
@@ -43,6 +49,36 @@ public class CreatePatientUseCaseTests
         savedPatient.Should().NotBeNull();
         savedPatient.Name.Should().Be("John Doe");
     }
+
+    [Fact]
+    public async Task Execute_ShouldThrowValidationException_WhenValidatorFails()
+    {
+        // arrange
+        var repo = new Mock<IPatientRepository>();
+        var mrn = new FakeMrnGenerator();
+
+        var validatorMock = new Mock<IValidator<CreatePatientRequest>>();
+        validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<CreatePatientRequest>(), default))
+            .ReturnsAsync(new ValidationResult(new[]
+            {
+            new ValidationFailure("Name", "Required")
+            }));
+
+        var useCase = new CreatePatientUseCase(
+            repo.Object,
+            mrn,
+            validatorMock.Object);
+
+        // act
+        var act = () => useCase.ExecuteAsync(new CreatePatientRequest());
+
+        // assert
+        await Assert.ThrowsAsync<ValidationException>(act);
+
+        repo.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Never);
+    }
+
 }
 
 class FakeMrnGenerator : IMrnGenerator

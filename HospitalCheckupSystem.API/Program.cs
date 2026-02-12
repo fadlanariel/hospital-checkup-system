@@ -4,6 +4,9 @@ using HospitalCheckupSystem.Domain.Services;
 using HospitalCheckupSystem.Infrastructure.Persistence;
 using HospitalCheckupSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using HospitalCheckupSystem.Application.DTOs;
+using HospitalCheckupSystem.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +24,8 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IMrnGenerator, MrnGenerator>();
 builder.Services.AddScoped<CreatePatientUseCase>();
 
+//Add Validators
+builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();
 
 var app = builder.Build();
 
