@@ -7,6 +7,7 @@ public class MedicalCheckup
     public string McuNumber { get; private set; }
     public DateTime CheckupDate { get; private set; }
     public string Status { get; private set; }
+    public VitalSigns? Vitals { get; private set; }
 
     private MedicalCheckup() { }
 
@@ -18,4 +19,10 @@ public class MedicalCheckup
         CheckupDate = date;
         Status = "Draft";
     }
+
+    public void RecordVitals(decimal height, decimal weight, int systolic, int diastolic, int pulse)
+    {
+        Vitals = new VitalSigns(height, weight, systolic, diastolic, pulse);
+    }
+
 }

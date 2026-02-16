@@ -6,4 +6,6 @@ public interface IMedicalCheckupRepository
 {
     Task<int> GetNextSequenceAsync(int year);
     Task AddAsync(MedicalCheckup checkup);
+    Task<MedicalCheckup?> GetByIdAsync(Guid id);
+    Task UpdateAsync(MedicalCheckup checkup);
 }
