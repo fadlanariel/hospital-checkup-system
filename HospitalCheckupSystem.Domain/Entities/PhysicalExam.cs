@@ -2,7 +2,7 @@
 
 public class PhysicalExam
 {
-    public string GeneralAppeareance { get; private set; }
+    public string GeneralAppearance { get; private set; }
     public string Eyes { get; private set; }
     public string ENT {  get; private set; }
     public string Heart { get; private set; }
@@ -13,7 +13,7 @@ public class PhysicalExam
     private PhysicalExam() { }
 
     public PhysicalExam(
-        string generalAppeareance, 
+        string generalAppearance, 
         string eyes, 
         string eNT, 
         string heart, 
@@ -21,7 +21,7 @@ public class PhysicalExam
         string abdomen, 
         string neurology)
     {
-        GeneralAppeareance = generalAppeareance;
+        GeneralAppearance = generalAppearance;
         Eyes = eyes;
         ENT = eNT;
         Heart = heart;

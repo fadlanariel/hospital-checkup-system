@@ -8,7 +8,7 @@ public class Anamnesis
     public string Allergies { get; private set; }
     public bool Smoking { get; private set; }
     public bool Alcohol { get; private set; }
-    public string WorkHazardss { get; private set; }
+    public string WorkHazards { get; private set; }
 
     private Anamnesis() { }
 
@@ -19,7 +19,7 @@ public class Anamnesis
         string allergies, 
         bool smoking, 
         bool alcohol, 
-        string workHazardss)
+        string workHazards)
     {
         Complaints = complaints;
         PastIllness = pastIllness;
@@ -27,6 +27,6 @@ public class Anamnesis
         Allergies = allergies;
         Smoking = smoking;
         Alcohol = alcohol;
-        WorkHazardss = workHazardss;
+        WorkHazards = workHazards;
     }
 }
