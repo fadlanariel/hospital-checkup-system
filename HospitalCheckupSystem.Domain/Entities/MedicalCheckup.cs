@@ -10,6 +10,7 @@ public class MedicalCheckup
     public VitalSigns? Vitals { get; private set; }
     public Anamnesis? Anamnesis { get; private set; }
     public PhysicalExam? PhysicalExam { get; private set; }
+    public List<LabResultItem> LabResults { get; private set; } = new();
 
     private MedicalCheckup() { }
 
@@ -73,6 +74,21 @@ public class MedicalCheckup
             lungs,
             abdomen,
             neurology);
+    }
+
+    public void AddLabResult(
+        string testName,
+        string unit,
+        string value,
+        decimal? normalMin,
+        decimal? normalMax)
+    {
+        LabResults.Add(new LabResultItem(
+            testName,
+            unit,
+            value,
+            normalMin,
+            normalMax));
     }
 
 }
