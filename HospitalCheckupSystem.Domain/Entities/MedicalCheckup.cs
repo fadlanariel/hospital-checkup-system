@@ -9,6 +9,7 @@ public class MedicalCheckup
     public string Status { get; private set; }
     public VitalSigns? Vitals { get; private set; }
     public Anamnesis? Anamnesis { get; private set; }
+    public PhysicalExam? PhysicalExam { get; private set; }
 
     private MedicalCheckup() { }
 
@@ -55,5 +56,23 @@ public class MedicalCheckup
             workHazards);
     }
 
+    public void RecordPhysicalExam(
+        string generalAppearance,
+        string eyes,
+        string ent,
+        string heart,
+        string lungs,
+        string abdomen,
+        string neurology)
+    {
+        PhysicalExam = new PhysicalExam(
+            generalAppearance,
+            eyes,
+            ent,
+            heart,
+            lungs,
+            abdomen,
+            neurology);
+    }
 
 }
