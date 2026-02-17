@@ -11,8 +11,19 @@ public class MedicalCheckup
     public Anamnesis? Anamnesis { get; private set; }
     public PhysicalExam? PhysicalExam { get; private set; }
     public List<LabResultItem> LabResults { get; private set; } = new();
+    public MedicalConclusion? Conclusion { get; private set; }
+    public bool IsFinished { get; private set; }
 
     private MedicalCheckup() { }
+
+    private bool IsComplete()
+    {
+        return Vitals != null
+            && Anamnesis != null
+            && PhysicalExam != null
+            && LabResults.Any();
+    }
+
 
     public MedicalCheckup(Guid patientId, string mcuNumber, DateTime date)
     {
@@ -89,6 +100,18 @@ public class MedicalCheckup
             value,
             normalMin,
             normalMax));
+    }
+
+    public void MakeConclusion(bool fit, string diagnosis, string recommendation)
+    {
+        if (IsFinished)
+            throw new InvalidOperationException("Checkup already finished");
+
+        if (!IsComplete())
+            throw new InvalidOperationException("Medical checkup data incomplete");
+
+        Conclusion = new MedicalConclusion(fit, diagnosis, recommendation);
+        IsFinished = true;
     }
 
 }
