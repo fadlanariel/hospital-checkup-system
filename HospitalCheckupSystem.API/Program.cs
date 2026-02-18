@@ -23,6 +23,10 @@ builder.Services.AddDbContext<HospitalDbContext>(opt =>
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IMrnGenerator, MrnGenerator>();
 builder.Services.AddScoped<CreatePatientUseCase>();
+builder.Services.AddScoped<StartMedicalCheckupUseCase>();
+builder.Services.AddScoped<IMcuNumberGenerator, McuNumberGenerator>();
+builder.Services.AddScoped<IMedicalCheckupRepository, MedicalCheckupRepository>();
+
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();
