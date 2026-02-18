@@ -26,7 +26,10 @@ builder.Services.AddScoped<CreatePatientUseCase>();
 builder.Services.AddScoped<StartMedicalCheckupUseCase>();
 builder.Services.AddScoped<IMcuNumberGenerator, McuNumberGenerator>();
 builder.Services.AddScoped<IMedicalCheckupRepository, MedicalCheckupRepository>();
-
+builder.Services.AddScoped<RecordAnamnesisUseCase>();
+builder.Services.AddScoped<RecordVitalsUseCase>();
+builder.Services.AddScoped<RecordPhysicalExamUseCase>();
+builder.Services.AddScoped<RecordLabResultUseCase>();
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();
