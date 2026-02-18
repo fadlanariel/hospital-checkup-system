@@ -24,6 +24,11 @@ public class MedicalCheckup
             && LabResults.Any();
     }
 
+    private void EnsureNotFinished()
+    {
+        if (IsFinished)
+            throw new InvalidOperationException("Checkup already finished");
+    }
 
     public MedicalCheckup(Guid patientId, string mcuNumber, DateTime date)
     {
@@ -41,6 +46,8 @@ public class MedicalCheckup
         diastolic, 
         int pulse)
     {
+        EnsureNotFinished();
+
         Vitals = new VitalSigns(
             height, 
             weight, 
@@ -58,6 +65,8 @@ public class MedicalCheckup
         bool alcohol,
         string workHazards)
     {
+        EnsureNotFinished();
+
         Anamnesis = new Anamnesis(
             complaints,
             pastIllness,
@@ -77,6 +86,8 @@ public class MedicalCheckup
         string abdomen,
         string neurology)
     {
+        EnsureNotFinished();
+
         PhysicalExam = new PhysicalExam(
             generalAppearance,
             eyes,
@@ -94,6 +105,8 @@ public class MedicalCheckup
         decimal? normalMin,
         decimal? normalMax)
     {
+        EnsureNotFinished();
+
         LabResults.Add(new LabResultItem(
             testName,
             unit,

@@ -1,12 +1,13 @@
+using FluentValidation;
+using HospitalCheckupSystem.API.Middleware;
+using HospitalCheckupSystem.Application.DTOs;
 using HospitalCheckupSystem.Application.UseCases;
+using HospitalCheckupSystem.Application.Validators;
 using HospitalCheckupSystem.Domain.Interfaces;
 using HospitalCheckupSystem.Domain.Services;
 using HospitalCheckupSystem.Infrastructure.Persistence;
 using HospitalCheckupSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation;
-using HospitalCheckupSystem.Application.DTOs;
-using HospitalCheckupSystem.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//Add Middlewares
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthorization();
 
