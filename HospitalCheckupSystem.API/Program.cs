@@ -30,6 +30,7 @@ builder.Services.AddScoped<RecordAnamnesisUseCase>();
 builder.Services.AddScoped<RecordVitalsUseCase>();
 builder.Services.AddScoped<RecordPhysicalExamUseCase>();
 builder.Services.AddScoped<RecordLabResultUseCase>();
+builder.Services.AddScoped<MakeDoctorConclusionUseCase>();
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();

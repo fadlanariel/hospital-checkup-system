@@ -8,7 +8,7 @@ using HospitalCheckupSystem.Tests.Helpers;
 
 namespace HospitalCheckupSystem.Tests.Application;
 
-public class MakeDoctorConclusionTests
+public class MedicalCheckupConclusionTests
 {
     [Fact]
     public void Should_Set_Doctor_Conclusion()
@@ -25,12 +25,13 @@ public class MakeDoctorConclusionTests
         checkup.AddLabResult("Hemoglobin", "g/dL", "13.5", 13, 17);
 
         checkup.MakeConclusion(
-            fit: true,
-            diagnosis: "Healthy",
-            recommendation: "Maintain healthy lifestyle"
+            true,
+            "Healthy",
+            "Maintain healthy lifestyle"
         );
 
         checkup.IsFinished.Should().BeTrue();
+        checkup.Conclusion.Should().NotBeNull();
         checkup.Conclusion!.Fit.Should().BeTrue();
         checkup.Conclusion.Diagnosis.Should().Be("Healthy");
     }
@@ -44,11 +45,7 @@ public class MakeDoctorConclusionTests
             DateTime.Today
         );
 
-        var act = () => checkup.MakeConclusion(
-            true,
-            "Healthy",
-            "OK"
-        );
+        var act = () => checkup.MakeConclusion(true, "Healthy", "OK");
 
         act.Should().Throw<InvalidOperationException>();
     }
@@ -62,5 +59,4 @@ public class MakeDoctorConclusionTests
 
         act.Should().Throw<InvalidOperationException>();
     }
-
 }

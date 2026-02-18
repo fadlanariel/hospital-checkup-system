@@ -13,19 +13,22 @@ public class CheckupsController : ControllerBase
     private readonly RecordVitalsUseCase _vitalsUseCase;
     private readonly RecordPhysicalExamUseCase _physicalUseCase;
     private readonly RecordLabResultUseCase _labUseCase;
+    private readonly MakeDoctorConclusionUseCase _conclusionUseCase;
 
     public CheckupsController(
         StartMedicalCheckupUseCase startUseCase,
         RecordAnamnesisUseCase anamnesisUseCase,
         RecordVitalsUseCase vitalsUseCase,
         RecordPhysicalExamUseCase physicalUseCase,
-        RecordLabResultUseCase labUseCase)
+        RecordLabResultUseCase labUseCase,
+        MakeDoctorConclusionUseCase conclusionUseCase)
     {
         _startUseCase = startUseCase;
         _anamnesisUseCase = anamnesisUseCase;
         _vitalsUseCase = vitalsUseCase;
         _physicalUseCase = physicalUseCase;
         _labUseCase = labUseCase;
+        _conclusionUseCase = conclusionUseCase;
     }
 
     [HttpPost]
@@ -125,4 +128,19 @@ public class CheckupsController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("{id}/conclusion")]
+    public async Task<IActionResult> MakeConclusion(
+        Guid id,
+        [FromBody] MakeConclusionRequest request)
+    {
+        await _conclusionUseCase.ExecuteAsync(new MakeDoctorConclusionCommand
+        {
+            CheckupId = id,
+            Fit = request.Fit,
+            Diagnosis = request.Diagnosis,
+            Recommendation = request.Recommendation
+        });
+
+        return NoContent();
+    }
 }
