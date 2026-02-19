@@ -34,6 +34,7 @@ builder.Services.AddScoped<RecordLabResultUseCase>();
 builder.Services.AddScoped<MakeDoctorConclusionUseCase>();
 builder.Services.AddScoped<GetMedicalCheckupUseCase>();
 builder.Services.AddScoped<GetPatientCheckupsUseCase>();
+builder.Services.AddScoped<GenerateCheckupReportUseCase>();
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();

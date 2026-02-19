@@ -147,4 +147,14 @@ public class CheckupsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("{id}/report")]
+    public async Task<IActionResult> GetReport(
+        Guid id,
+        [FromServices] GenerateCheckupReportUseCase useCase)
+    {
+        var result = await useCase.Execute(id);
+        return Ok(result);
+    }
+
 }
