@@ -45,12 +45,16 @@ public class CheckupsController : ControllerBase
             result);
     }
 
-    // placeholder for later
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public async Task<IActionResult> GetById(
+        Guid id,
+        [FromServices] GetMedicalCheckupUseCase useCase)
     {
-        return Ok();
+        var result = await useCase.Execute(id);
+
+        return Ok(result);
     }
+
 
     [HttpPost("{id}/anamnesis")]
     public async Task<IActionResult> RecordAnamnesis(
