@@ -18,15 +18,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="QuestPDF" Version="2026.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HospitalCheckupSystem.Application\HospitalCheckupSystem.Application.csproj" />
     <ProjectReference Include="..\HospitalCheckupSystem.Domain\HospitalCheckupSystem.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

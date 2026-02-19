@@ -1,13 +1,18 @@
 using FluentValidation;
 using HospitalCheckupSystem.API.Middleware;
 using HospitalCheckupSystem.Application.DTOs;
+using HospitalCheckupSystem.Application.Interfaces;
 using HospitalCheckupSystem.Application.UseCases;
 using HospitalCheckupSystem.Application.Validators;
 using HospitalCheckupSystem.Domain.Interfaces;
 using HospitalCheckupSystem.Domain.Services;
 using HospitalCheckupSystem.Infrastructure.Persistence;
 using HospitalCheckupSystem.Infrastructure.Repositories;
+using HospitalCheckupSystem.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +40,7 @@ builder.Services.AddScoped<MakeDoctorConclusionUseCase>();
 builder.Services.AddScoped<GetMedicalCheckupUseCase>();
 builder.Services.AddScoped<GetPatientCheckupsUseCase>();
 builder.Services.AddScoped<GenerateCheckupReportUseCase>();
+builder.Services.AddScoped<IPdfReportGenerator, QuestPdfReportGenerator>();
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();

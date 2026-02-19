@@ -1,4 +1,5 @@
 ﻿using HospitalCheckupSystem.Application.DTOs;
+using HospitalCheckupSystem.Application.Interfaces;
 using HospitalCheckupSystem.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
 
@@ -155,6 +156,22 @@ public class CheckupsController : ControllerBase
     {
         var result = await useCase.Execute(id);
         return Ok(result);
+    }
+
+    [HttpGet("{id}/report/pdf")]
+    public async Task<IActionResult> GetReportPdf(
+        Guid id,
+        [FromServices] GenerateCheckupReportUseCase useCase,
+        [FromServices] IPdfReportGenerator pdfGenerator)
+    {
+        var report = await useCase.Execute(id);
+
+        var pdfBytes = pdfGenerator.GenerateMedicalCheckupReport(report);
+
+        return File(
+            pdfBytes,
+            "application/pdf",
+            $"MedicalCheckup-{report.McuNumber}.pdf");
     }
 
 }
