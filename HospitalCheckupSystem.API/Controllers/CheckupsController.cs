@@ -15,6 +15,9 @@ public class CheckupsController : ControllerBase
     private readonly RecordPhysicalExamUseCase _physicalUseCase;
     private readonly RecordLabResultUseCase _labUseCase;
     private readonly MakeDoctorConclusionUseCase _conclusionUseCase;
+    private readonly GetMedicalCheckupUseCase _getUseCase;
+    private readonly GenerateCheckupReportUseCase _reportUseCase;
+    private readonly IPdfReportGenerator _pdfGenerator;
 
     public CheckupsController(
         StartMedicalCheckupUseCase startUseCase,
@@ -22,7 +25,10 @@ public class CheckupsController : ControllerBase
         RecordVitalsUseCase vitalsUseCase,
         RecordPhysicalExamUseCase physicalUseCase,
         RecordLabResultUseCase labUseCase,
-        MakeDoctorConclusionUseCase conclusionUseCase)
+        MakeDoctorConclusionUseCase conclusionUseCase,
+        GetMedicalCheckupUseCase getUseCase,
+        GenerateCheckupReportUseCase reportUseCase,
+        IPdfReportGenerator pdfGenerator)
     {
         _startUseCase = startUseCase;
         _anamnesisUseCase = anamnesisUseCase;
@@ -30,6 +36,9 @@ public class CheckupsController : ControllerBase
         _physicalUseCase = physicalUseCase;
         _labUseCase = labUseCase;
         _conclusionUseCase = conclusionUseCase;
+        _getUseCase = getUseCase;
+        _reportUseCase = reportUseCase;
+        _pdfGenerator = pdfGenerator;
     }
 
     [HttpPost]
@@ -47,11 +56,9 @@ public class CheckupsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(
-        Guid id,
-        [FromServices] GetMedicalCheckupUseCase useCase)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await useCase.Execute(id);
+        var result = await _getUseCase.Execute(id);
 
         return Ok(result);
     }
@@ -150,23 +157,17 @@ public class CheckupsController : ControllerBase
     }
 
     [HttpGet("{id}/report")]
-    public async Task<IActionResult> GetReport(
-        Guid id,
-        [FromServices] GenerateCheckupReportUseCase useCase)
+    public async Task<IActionResult> GetReport(Guid id)
     {
-        var result = await useCase.Execute(id);
+        var result = await _reportUseCase.Execute(id);
         return Ok(result);
     }
 
     [HttpGet("{id}/report/pdf")]
-    public async Task<IActionResult> GetReportPdf(
-        Guid id,
-        [FromServices] GenerateCheckupReportUseCase useCase,
-        [FromServices] IPdfReportGenerator pdfGenerator)
+    public async Task<IActionResult> GetReportPdf(Guid id)
     {
-        var report = await useCase.Execute(id);
-
-        var pdfBytes = pdfGenerator.GenerateMedicalCheckupReport(report);
+        var report = await _reportUseCase.Execute(id);
+        var pdfBytes = _pdfGenerator.GenerateMedicalCheckupReport(report);
 
         return File(
             pdfBytes,
