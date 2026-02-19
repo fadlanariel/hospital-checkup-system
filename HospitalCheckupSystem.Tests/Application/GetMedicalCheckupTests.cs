@@ -30,7 +30,8 @@ public class GetMedicalCheckupTests
         var result = await useCase.Execute(checkupId);
 
         result.Should().NotBeNull();
-        result.Should().Be(checkup);
+        result.Id.Should().Be(checkup.Id);
+        result.McuNumber.Should().Be("MCU-2026-000001");
     }
 
     [Fact]
