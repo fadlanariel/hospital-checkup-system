@@ -8,4 +8,5 @@ public interface IMedicalCheckupRepository
     Task AddAsync(MedicalCheckup checkup);
     Task<MedicalCheckup?> GetByIdAsync(Guid id);
     Task UpdateAsync(MedicalCheckup checkup);
+    Task<List<MedicalCheckup>> GetByPatientIdAsync(Guid patientId);
 }

@@ -26,7 +26,7 @@ public class GetPatientCheckupsTests
 
         var useCase = new GetPatientCheckupsUseCase(repoMock.Object);
 
-        var result = await useCase.Execute(patientId);
+        var result = await useCase.ExecuteAsync(patientId);
 
         result.Should().HaveCount(2);
         result.First().McuNumber.Should().Be("MCU-2026-000002");
@@ -44,10 +44,8 @@ public class GetPatientCheckupsTests
 
         var useCase = new GetPatientCheckupsUseCase(repoMock.Object);
 
-        var result = await useCase.Execute(patientId);
+        var result = await useCase.ExecuteAsync(patientId);
 
         result.Should().BeEmpty();
     }
-}
-
 }

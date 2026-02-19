@@ -27,6 +27,13 @@ public class MedicalCheckupRepository : IMedicalCheckupRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<List<MedicalCheckup>> GetByPatientIdAsync(Guid patientId)
+    {
+        return await _context.MedicalCheckups
+            .Where(c => c.PatientId == patientId)
+            .ToListAsync();
+    }
+
     public async Task<int> GetNextSequenceAsync(int year)
     {
         var count = await _context.MedicalCheckups
