@@ -1,0 +1,15 @@
+﻿namespace HospitalCheckupSystem.Application.DTOs;
+
+public class MedicalCheckupReportDto
+{
+    public Guid Id { get; set; }
+    public Guid PatientId { get; set; }
+    public string McuNumber { get; set; } = default!;
+    public DateTime CheckupDate { get; set; }
+
+    public VitalSignsDto? Vitals { get; set; }
+    public AnamnesisDto? Anamnesis { get; set; }
+    public PhysicalExamDto? PhysicalExam { get; set; }
+    public List<LabResultItemDto> LabResults { get; set; } = new();
+    public MedicalConclusionDto Conclusion { get; set; } = default!;
+}
