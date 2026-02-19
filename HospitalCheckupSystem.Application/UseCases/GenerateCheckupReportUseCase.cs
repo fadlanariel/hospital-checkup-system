@@ -33,6 +33,7 @@ public class GenerateCheckupReportUseCase
 
         return new MedicalCheckupReportDto
         {
+            PatientMrn = patient.Mrn,
             PatientName = patient.Name,
             Gender = patient.Gender,
             DateOfBirth = patient.Dob,

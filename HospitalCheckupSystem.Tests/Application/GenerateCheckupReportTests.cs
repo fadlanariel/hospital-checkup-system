@@ -41,6 +41,7 @@ public class GenerateCheckupReportTests
 
         result.McuNumber.Should().Be(checkup.McuNumber);
         result.PatientId.Should().Be(checkup.PatientId);
+        result.PatientMrn.Should().Be("MRN-2026-000001");
         result.PatientName.Should().Be("JANE DOE");
         result.Conclusion!.Diagnosis.Should().NotBeNull();
     }
@@ -100,6 +101,7 @@ public class GenerateCheckupReportTests
 
         var result = await useCase.Execute(checkup.Id);
 
+        result.PatientMrn.Should().Be("MRN-2026-000001");
         result.PatientName.Should().Be("JANE DOE");
         result.Gender.Should().Be("Perempuan");
         result.DateOfBirth.Should().Be(new DateTime(1974, 8, 2));

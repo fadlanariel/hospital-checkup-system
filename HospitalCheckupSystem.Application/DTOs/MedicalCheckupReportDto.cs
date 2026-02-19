@@ -2,6 +2,7 @@
 
 public class MedicalCheckupReportDto
 {
+    public string PatientMrn { get; set; } = default;
     public string PatientName { get; set; } = default!;
     public string Gender { get; set; } = default!;
     public DateTime DateOfBirth { get; set; }
