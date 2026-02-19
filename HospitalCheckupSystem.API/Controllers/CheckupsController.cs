@@ -172,7 +172,7 @@ public class CheckupsController : ControllerBase
         return File(
             pdfBytes,
             "application/pdf",
-            $"MedicalCheckup-{report.McuNumber}.pdf");
+            $"{report.PatientName}-{report.McuNumber}.pdf");
     }
 
 }
