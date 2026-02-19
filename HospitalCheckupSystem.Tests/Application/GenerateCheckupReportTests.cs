@@ -51,4 +51,66 @@ public class GenerateCheckupReportTests
             .WithMessage("Checkup not finished");
     }
 
+    [Fact]
+    public async Task Should_Include_Patient_Data_In_Report()
+    {
+        var patientId = Guid.NewGuid();
+
+        var checkup = CompletedCheckupFactory.CreateCompleted(patientId);
+
+        var patient = new Patient(
+            patientId,
+            "JANE DOE",
+            "Perempuan",
+            new DateTime(1974, 8, 2)
+        );
+
+        var checkupRepoMock = new Mock<IMedicalCheckupRepository>();
+        checkupRepoMock
+            .Setup(r => r.GetByIdAsync(checkup.Id))
+            .ReturnsAsync(checkup);
+
+        var patientRepoMock = new Mock<IPatientRepository>();
+        patientRepoMock
+            .Setup(r => r.GetByIdAsync(patientId))
+            .ReturnsAsync(patient);
+
+        var useCase = new GenerateCheckupReportUseCase(
+            checkupRepoMock.Object,
+            patientRepoMock.Object
+        );
+
+        var result = await useCase.Execute(checkup.Id);
+
+        result.PatientName.Should().Be("JANE DOE");
+        result.Gender.Should().Be("Perempuan");
+        result.DateOfBirth.Should().Be(new DateTime(1974, 8, 2));
+    }
+
+    [Fact]
+    public async Task Should_Throw_When_Patient_Not_Found()
+    {
+        var checkup = CompletedCheckupFactory.CreateCompleted();
+
+        var checkupRepoMock = new Mock<IMedicalCheckupRepository>();
+        checkupRepoMock
+            .Setup(r => r.GetByIdAsync(checkup.Id))
+            .ReturnsAsync(checkup);
+
+        var patientRepoMock = new Mock<IPatientRepository>();
+        patientRepoMock
+            .Setup(r => r.GetByIdAsync(checkup.PatientId))
+            .ReturnsAsync((Patient?)null);
+
+        var useCase = new GenerateCheckupReportUseCase(
+            checkupRepoMock.Object,
+            patientRepoMock.Object
+        );
+
+        var act = () => useCase.Execute(checkup.Id);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Patient not found");
+    }
+
 }
