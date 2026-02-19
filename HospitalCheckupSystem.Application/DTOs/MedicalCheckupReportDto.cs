@@ -2,6 +2,10 @@
 
 public class MedicalCheckupReportDto
 {
+    public string PatientName { get; set; } = default!;
+    public string Gender { get; set; } = default!;
+    public DateTime DateOfBirth { get; set; }
+
     public Guid Id { get; set; }
     public Guid PatientId { get; set; }
     public string McuNumber { get; set; } = default!;

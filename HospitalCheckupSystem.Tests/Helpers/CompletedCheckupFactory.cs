@@ -4,10 +4,12 @@ namespace HospitalCheckupSystem.Tests.Helpers;
 
 public static class CompletedCheckupFactory
 {
-    public static MedicalCheckup CreateCompleted()
+    public static MedicalCheckup CreateCompleted(Guid? patientId = null)
     {
+        var actualPatientId = patientId ?? Guid.NewGuid();
+
         var checkup = new MedicalCheckup(
-            Guid.NewGuid(),
+            actualPatientId,
             "MCU-2026-000001",
             DateTime.Today
         );

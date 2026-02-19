@@ -6,10 +6,14 @@ namespace HospitalCheckupSystem.Application.UseCases;
 public class GenerateCheckupReportUseCase
 {
     private readonly IMedicalCheckupRepository _repository;
+    private readonly IPatientRepository _patientRepository;
 
-    public GenerateCheckupReportUseCase(IMedicalCheckupRepository repository)
+    public GenerateCheckupReportUseCase(
+        IMedicalCheckupRepository repository,
+        IPatientRepository patientRepository)
     {
         _repository = repository;
+        _patientRepository = patientRepository;
     }
 
     public async Task<MedicalCheckupReportDto> Execute(Guid id)
@@ -22,12 +26,22 @@ public class GenerateCheckupReportUseCase
         if (!checkup.IsFinished)
             throw new InvalidOperationException("Checkup not finished");
 
+        var patient = await _patientRepository.GetByIdAsync(checkup.PatientId);
+
+        if (patient == null)
+            throw new InvalidOperationException("Patient not found");
+
         return new MedicalCheckupReportDto
         {
+            PatientName = patient.Name,
+            Gender = patient.Gender,
+            DateOfBirth = patient.Dob,
+
             Id = checkup.Id,
             PatientId = checkup.PatientId,
             McuNumber = checkup.McuNumber,
             CheckupDate = checkup.CheckupDate,
+
             Vitals = checkup.Vitals == null ? null : new VitalSignsDto
             {
                 Height = checkup.Vitals.Height,
@@ -36,6 +50,7 @@ public class GenerateCheckupReportUseCase
                 Diastolic = checkup.Vitals.Diastolic,
                 Pulse = checkup.Vitals.Pulse
             },
+
             Anamnesis = checkup.Anamnesis == null ? null : new AnamnesisDto
             {
                 Complaints = checkup.Anamnesis.Complaints,
@@ -46,6 +61,7 @@ public class GenerateCheckupReportUseCase
                 Alcohol = checkup.Anamnesis.Alcohol,
                 WorkHazards = checkup.Anamnesis.WorkHazards
             },
+
             PhysicalExam = checkup.PhysicalExam == null ? null : new PhysicalExamDto
             {
                 GeneralAppearance = checkup.PhysicalExam.GeneralAppearance,
@@ -56,6 +72,7 @@ public class GenerateCheckupReportUseCase
                 Abdomen = checkup.PhysicalExam.Abdomen,
                 Neurology = checkup.PhysicalExam.Neurology
             },
+
             LabResults = checkup.LabResults.Select(l => new LabResultItemDto
             {
                 TestName = l.TestName,
@@ -65,6 +82,7 @@ public class GenerateCheckupReportUseCase
                 NormalMax = l.NormalMax,
                 IsNormal = l.IsNormal
             }).ToList(),
+
             Conclusion = new MedicalConclusionDto
             {
                 Fit = checkup.Conclusion!.Fit,

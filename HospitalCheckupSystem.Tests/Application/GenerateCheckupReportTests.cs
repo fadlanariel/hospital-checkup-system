@@ -13,19 +13,35 @@ public class GenerateCheckupReportTests
     [Fact]
     public async Task Should_Generate_Report_When_Checkup_Finished()
     {
-        var checkup = CompletedCheckupFactory.CreateCompleted();
+        var patient = new Patient(
+            "MRN-2026-000001",
+            "JANE DOE",
+            new DateTime(1974, 8, 2),
+            "Perempuan",
+            "08123456789",
+            "Jakarta",
+            "BPJS"
+        );
+
+        var checkup = CompletedCheckupFactory.CreateCompleted(patient.Id);
 
         var repoMock = new Mock<IMedicalCheckupRepository>();
         repoMock
             .Setup(r => r.GetByIdAsync(checkup.Id))
             .ReturnsAsync(checkup);
 
-        var useCase = new GenerateCheckupReportUseCase(repoMock.Object);
+        var patientRepoMock = new Mock<IPatientRepository>();
+        patientRepoMock
+            .Setup(r => r.GetByIdAsync(checkup.PatientId))
+            .ReturnsAsync(patient);
+
+        var useCase = new GenerateCheckupReportUseCase(repoMock.Object, patientRepoMock.Object);
 
         var result = await useCase.Execute(checkup.Id);
 
         result.McuNumber.Should().Be(checkup.McuNumber);
         result.PatientId.Should().Be(checkup.PatientId);
+        result.PatientName.Should().Be("JANE DOE");
         result.Conclusion!.Diagnosis.Should().NotBeNull();
     }
 
@@ -39,11 +55,12 @@ public class GenerateCheckupReportTests
         );
 
         var repoMock = new Mock<IMedicalCheckupRepository>();
+        var patientRepoMock = new Mock<IPatientRepository>();
         repoMock
             .Setup(r => r.GetByIdAsync(checkup.Id))
             .ReturnsAsync(checkup);
 
-        var useCase = new GenerateCheckupReportUseCase(repoMock.Object);
+        var useCase = new GenerateCheckupReportUseCase(repoMock.Object, patientRepoMock.Object);
 
         var act = () => useCase.Execute(checkup.Id);
 
@@ -54,16 +71,17 @@ public class GenerateCheckupReportTests
     [Fact]
     public async Task Should_Include_Patient_Data_In_Report()
     {
-        var patientId = Guid.NewGuid();
-
-        var checkup = CompletedCheckupFactory.CreateCompleted(patientId);
-
         var patient = new Patient(
-            patientId,
+            "MRN-2026-000001",
             "JANE DOE",
+            new DateTime(1974, 8, 2),
             "Perempuan",
-            new DateTime(1974, 8, 2)
+            "08123456789",
+            "Jakarta",
+            "BPJS"
         );
+     
+        var checkup = CompletedCheckupFactory.CreateCompleted(patient.Id);
 
         var checkupRepoMock = new Mock<IMedicalCheckupRepository>();
         checkupRepoMock
@@ -72,7 +90,7 @@ public class GenerateCheckupReportTests
 
         var patientRepoMock = new Mock<IPatientRepository>();
         patientRepoMock
-            .Setup(r => r.GetByIdAsync(patientId))
+            .Setup(r => r.GetByIdAsync(patient.Id))
             .ReturnsAsync(patient);
 
         var useCase = new GenerateCheckupReportUseCase(

@@ -20,6 +20,12 @@ public class PatientRepository : IPatientRepository
         await _db.SaveChangesAsync();
     }
 
+    public async Task<Patient?> GetByIdAsync(Guid id)
+    {
+        return await _db.Patients
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<int> GetNextSequenceAsync()
     {
         var count = await _db.Patients.CountAsync();
