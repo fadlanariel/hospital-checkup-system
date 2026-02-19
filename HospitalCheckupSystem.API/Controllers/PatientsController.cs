@@ -21,4 +21,14 @@ public class PatientsController : ControllerBase
         var result = await _createPatient.ExecuteAsync(request);
         return Ok(result);
     }
+
+    [HttpGet("{id}/checkups")]
+    public async Task<IActionResult> GetCheckups(
+        Guid id,
+        [FromServices] GetPatientCheckupsUseCase useCase)
+    {
+        var result = await useCase.ExecuteAsync(id);
+        return Ok(result);
+    }
+
 }
