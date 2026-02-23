@@ -1,4 +1,5 @@
 ﻿using HospitalCheckupSystem.Application.DTOs;
+using HospitalCheckupSystem.Domain.Enums;
 using HospitalCheckupSystem.Domain.Interfaces;
 
 namespace HospitalCheckupSystem.Application.UseCases;
@@ -86,7 +87,13 @@ public class GenerateCheckupReportUseCase
 
             Conclusion = new MedicalConclusionDto
             {
-                Fit = checkup.Conclusion!.Fit,
+                FitnessStatus = checkup.Conclusion.FitnessStatus switch
+                {
+                    FitnessStatus.Fit => FitnessStatus.Fit,
+                    FitnessStatus.FitWithRestriction => FitnessStatus.FitWithRestriction,
+                    FitnessStatus.Unfit => FitnessStatus.Unfit,
+                    _ => throw new InvalidOperationException("Unknown fitness status")
+                },
                 Diagnosis = checkup.Conclusion.Diagnosis,
                 Recommendation = checkup.Conclusion.Recommendation
             }

@@ -1,4 +1,5 @@
 ﻿using HospitalCheckupSystem.Domain.Entities;
+using HospitalCheckupSystem.Domain.Enums;
 
 namespace HospitalCheckupSystem.Tests.Helpers;
 
@@ -20,7 +21,7 @@ public static class CompletedCheckupFactory
         checkup.AddLabResult("Hemoglobin", "g/dL", "13.5", 13, 17);
 
         checkup.MakeConclusion(
-            fit: true,
+            fitnessStatus: FitnessStatus.Fit,
             diagnosis: "Healthy",
             recommendation: "Maintain healthy lifestyle"
         );

@@ -1,4 +1,6 @@
-﻿namespace HospitalCheckupSystem.Application.DTOs;
+﻿using HospitalCheckupSystem.Domain.Enums;
+
+namespace HospitalCheckupSystem.Application.DTOs;
 
 public class MedicalCheckupResponseDto
 {
@@ -59,7 +61,7 @@ public class LabResultItemDto
 
 public class MedicalConclusionDto
 {
-    public bool Fit { get; set; }
+    public FitnessStatus FitnessStatus { get; set; }
     public string Diagnosis { get; set; } = default!;
     public string Recommendation { get; set; } = default!;
 }

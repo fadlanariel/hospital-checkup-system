@@ -73,7 +73,7 @@ public class GetMedicalCheckupUseCase
 
             Conclusion = checkup.Conclusion == null ? null : new MedicalConclusionDto
             {
-                Fit = checkup.Conclusion.Fit,
+                FitnessStatus = checkup.Conclusion.FitnessStatus,
                 Diagnosis = checkup.Conclusion.Diagnosis,
                 Recommendation = checkup.Conclusion.Recommendation
             }

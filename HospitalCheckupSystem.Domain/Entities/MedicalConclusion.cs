@@ -1,17 +1,19 @@
-﻿namespace HospitalCheckupSystem.Domain.Entities;
+﻿using HospitalCheckupSystem.Domain.Enums;
+
+namespace HospitalCheckupSystem.Domain.Entities;
 
 public class MedicalConclusion
 {
-    public bool Fit { get; private set; }
+    public FitnessStatus FitnessStatus { get; private set; }
     public string Diagnosis { get; private set; }
     public string Recommendation { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
     private MedicalConclusion() { }
 
-    public MedicalConclusion(bool fit, string diagnosis, string recommendation)
+    public MedicalConclusion(FitnessStatus fitnessStatus, string diagnosis, string recommendation)
     {
-        Fit = fit;
+        FitnessStatus = fitnessStatus;
         Diagnosis = diagnosis;
         Recommendation = recommendation;
         CreatedAt = DateTime.UtcNow;

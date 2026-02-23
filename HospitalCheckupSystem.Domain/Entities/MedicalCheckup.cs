@@ -1,4 +1,6 @@
-﻿namespace HospitalCheckupSystem.Domain.Entities;
+﻿using HospitalCheckupSystem.Domain.Enums;
+
+namespace HospitalCheckupSystem.Domain.Entities;
 
 public class MedicalCheckup
 {
@@ -115,7 +117,10 @@ public class MedicalCheckup
             normalMax));
     }
 
-    public void MakeConclusion(bool fit, string diagnosis, string recommendation)
+    public void MakeConclusion(
+        FitnessStatus fitnessStatus,
+        string diagnosis,
+        string recommendation)
     {
         if (IsFinished)
             throw new InvalidOperationException("Checkup already finished");
@@ -123,7 +128,11 @@ public class MedicalCheckup
         if (!IsComplete())
             throw new InvalidOperationException("Medical checkup data incomplete");
 
-        Conclusion = new MedicalConclusion(fit, diagnosis, recommendation);
+        Conclusion = new MedicalConclusion(
+            fitnessStatus,
+            diagnosis,
+            recommendation);
+
         IsFinished = true;
     }
 

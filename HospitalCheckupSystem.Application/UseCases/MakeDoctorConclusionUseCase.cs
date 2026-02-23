@@ -19,7 +19,7 @@ public class MakeDoctorConclusionUseCase
             throw new InvalidOperationException("Checkup not found");
 
         checkup.MakeConclusion(
-            command.Fit,
+            command.FitnessStatus,
             command.Diagnosis,
             command.Recommendation
         );

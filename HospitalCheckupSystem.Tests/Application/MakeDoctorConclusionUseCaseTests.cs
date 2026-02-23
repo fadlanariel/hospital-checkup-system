@@ -1,9 +1,10 @@
-﻿using Xunit;
-using Moq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using HospitalCheckupSystem.Application.UseCases;
 using HospitalCheckupSystem.Domain.Entities;
+using HospitalCheckupSystem.Domain.Enums;
 using HospitalCheckupSystem.Domain.Interfaces;
+using Moq;
+using Xunit;
 
 namespace HospitalCheckupSystem.Tests.Application;
 
@@ -34,7 +35,7 @@ public class MakeDoctorConclusionUseCaseTests
         await useCase.ExecuteAsync(new MakeDoctorConclusionCommand
         {
             CheckupId = checkupId,
-            Fit = true,
+            FitnessStatus = FitnessStatus.Fit,
             Diagnosis = "Healthy",
             Recommendation = "OK"
         });

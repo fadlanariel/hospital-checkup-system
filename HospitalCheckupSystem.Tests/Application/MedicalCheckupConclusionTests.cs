@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using HospitalCheckupSystem.Application.UseCases;
 using HospitalCheckupSystem.Domain.Entities;
+using HospitalCheckupSystem.Domain.Enums;
 using HospitalCheckupSystem.Domain.Interfaces;
 using HospitalCheckupSystem.Tests.Helpers;
+using Moq;
+using Xunit;
 
 namespace HospitalCheckupSystem.Tests.Application;
 
@@ -25,14 +26,14 @@ public class MedicalCheckupConclusionTests
         checkup.AddLabResult("Hemoglobin", "g/dL", "13.5", 13, 17);
 
         checkup.MakeConclusion(
-            true,
+            FitnessStatus.Fit,
             "Healthy",
             "Maintain healthy lifestyle"
         );
 
         checkup.IsFinished.Should().BeTrue();
         checkup.Conclusion.Should().NotBeNull();
-        checkup.Conclusion!.Fit.Should().BeTrue();
+        checkup.Conclusion!.FitnessStatus.Should().Be(FitnessStatus.Fit);
         checkup.Conclusion.Diagnosis.Should().Be("Healthy");
     }
 
@@ -45,7 +46,7 @@ public class MedicalCheckupConclusionTests
             DateTime.Today
         );
 
-        var act = () => checkup.MakeConclusion(true, "Healthy", "OK");
+        var act = () => checkup.MakeConclusion(FitnessStatus.Fit, "Healthy", "OK");
 
         act.Should().Throw<InvalidOperationException>();
     }
@@ -55,7 +56,7 @@ public class MedicalCheckupConclusionTests
     {
         var checkup = CompletedCheckupFactory.CreateCompleted();
 
-        var act = () => checkup.MakeConclusion(true, "Changed", "Changed");
+        var act = () => checkup.MakeConclusion(FitnessStatus.Fit, "Changed", "Changed");
 
         act.Should().Throw<InvalidOperationException>();
     }

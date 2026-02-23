@@ -92,7 +92,7 @@ public class MedicalCheckupConfiguration : IEntityTypeConfiguration<MedicalCheck
             c.Property<Guid>("Id");
             c.HasKey("Id");
 
-            c.Property(x => x.Fit);
+            c.Property(x => x.FitnessStatus);
             c.Property(x => x.Diagnosis);
             c.Property(x => x.Recommendation);
         });

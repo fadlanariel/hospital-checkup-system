@@ -148,7 +148,7 @@ public class CheckupsController : ControllerBase
         await _conclusionUseCase.ExecuteAsync(new MakeDoctorConclusionCommand
         {
             CheckupId = id,
-            Fit = request.Fit,
+            FitnessStatus = request.FitnessStatus,
             Diagnosis = request.Diagnosis,
             Recommendation = request.Recommendation
         });

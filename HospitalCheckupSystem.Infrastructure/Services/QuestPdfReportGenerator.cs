@@ -195,7 +195,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         col.Item().Text("FINAL STATUS:")
             .Bold();
 
-        col.Item().Text(report.Conclusion.Fit ? "FIT FOR WORK" : "NOT FIT FOR WORK")
+        col.Item().Text(report.Conclusion.FitnessStatus.ToString())
             .Bold()
             .FontSize(14);
 
