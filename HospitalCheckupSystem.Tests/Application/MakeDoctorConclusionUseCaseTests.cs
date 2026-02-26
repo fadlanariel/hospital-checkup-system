@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using HospitalCheckupSystem.Application.UseCases;
+using HospitalCheckupSystem.Application.Validators;
 using HospitalCheckupSystem.Domain.Entities;
 using HospitalCheckupSystem.Domain.Enums;
 using HospitalCheckupSystem.Domain.Interfaces;
@@ -30,7 +31,9 @@ public class MakeDoctorConclusionUseCaseTests
         repo.Setup(r => r.GetByIdAsync(checkupId))
             .ReturnsAsync(checkup);
 
-        var useCase = new MakeDoctorConclusionUseCase(repo.Object);
+        var validator = new MakeDoctorConclusionCommandValidator();
+
+        var useCase = new MakeDoctorConclusionUseCase(repo.Object, validator);
 
         await useCase.ExecuteAsync(new MakeDoctorConclusionCommand
         {
@@ -42,5 +45,22 @@ public class MakeDoctorConclusionUseCaseTests
 
         checkup.IsFinished.Should().BeTrue();
         repo.Verify(r => r.UpdateAsync(checkup), Times.Once);
+    }
+
+    [Fact]
+    public async Task Should_Reject_Empty_Diagnosis()
+    {
+        var validator = new MakeDoctorConclusionCommandValidator();
+
+        var result = await validator.ValidateAsync(
+            new MakeDoctorConclusionCommand
+            {
+                CheckupId = Guid.NewGuid(),
+                FitnessStatus = FitnessStatus.Fit,
+                Diagnosis = "",
+                Recommendation = "OK"
+            });
+
+        result.IsValid.Should().BeFalse();
     }
 }

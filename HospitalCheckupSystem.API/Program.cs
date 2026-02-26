@@ -44,6 +44,7 @@ builder.Services.AddScoped<IPdfReportGenerator, QuestPdfReportGenerator>();
 
 //Add Validators
 builder.Services.AddScoped<IValidator<CreatePatientRequest>, CreatePatientRequestValidator>();
+builder.Services.AddScoped<IValidator<MakeDoctorConclusionCommand>, MakeDoctorConclusionCommandValidator>();
 
 var app = builder.Build();
 
