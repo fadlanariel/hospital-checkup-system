@@ -44,11 +44,23 @@ public class MedicalCheckup
     public void RecordVitals(
         decimal height, 
         decimal weight, 
-        int systolic, int 
-        diastolic, 
+        int systolic, 
+        int diastolic, 
         int pulse)
     {
         EnsureNotFinished();
+
+        if (height <= 0)
+            throw new InvalidOperationException("Invalid height");
+
+        if (weight <= 0)
+            throw new InvalidOperationException("Invalid weight");
+
+        if (systolic < diastolic)
+            throw new InvalidOperationException("Invalid blood pressure");
+
+        if (pulse <= 0)
+            throw new InvalidOperationException("Invalid pulse");
 
         Vitals = new VitalSigns(
             height, 

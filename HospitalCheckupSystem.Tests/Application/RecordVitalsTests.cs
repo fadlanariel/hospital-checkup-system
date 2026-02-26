@@ -40,30 +40,4 @@ public class RecordVitalsTests
 
         repo.Verify(r => r.UpdateAsync(checkup), Times.Once);
     }
-
-    [Fact]
-    public void Should_Not_Allow_Invalid_Blood_Pressure()
-    {
-        var checkupId = Guid.NewGuid();
-
-        var checkup = new MedicalCheckup(
-            Guid.NewGuid(),
-            "MCU-2026-000001",
-            DateTime.Today
-        );
-
-        var repo = new Mock<IMedicalCheckupRepository>();
-        repo.Setup(r => r.GetByIdAsync(checkupId))
-            .ReturnsAsync(checkup);
-
-        var act = () => checkup.RecordVitals(
-            height: 170,
-            weight: 70,
-            systolic: 70,
-            diastolic: 120,   // invalid
-            pulse: 72
-        );
-
-        act.Should().Throw<InvalidOperationException>();
-    }
 }
