@@ -121,6 +121,12 @@ public class MedicalCheckup
     {
         EnsureNotFinished();
 
+        if (string.IsNullOrWhiteSpace(testName))
+            throw new InvalidOperationException("Lab test name is required");
+
+        if (normalMin.HasValue && normalMax.HasValue && normalMin > normalMax)
+            throw new InvalidOperationException("Invalid lab normal range");
+
         LabResults.Add(new LabResultItem(
             testName,
             unit,
