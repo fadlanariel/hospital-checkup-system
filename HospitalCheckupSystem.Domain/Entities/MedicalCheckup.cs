@@ -14,6 +14,8 @@ public class MedicalCheckup
     public PhysicalExam? PhysicalExam { get; private set; }
     public List<LabResultItem> LabResults { get; private set; } = new();
     public MedicalConclusion? Conclusion { get; private set; }
+    public RadiologyResult? Radiology { get; private set; }
+
     public bool IsFinished { get; private set; }
 
     private MedicalCheckup() { }
@@ -133,6 +135,25 @@ public class MedicalCheckup
             value,
             normalMin,
             normalMax));
+    }
+
+    public void RecordRadiology(
+        string examination,
+        string findings,
+        string impression,
+        string radiologistName,
+        DateTime examDate)
+    {
+        if (IsFinished)
+            throw new InvalidOperationException("Cannot modify finished checkup");
+
+        Radiology = new RadiologyResult(
+            examination,
+            findings,
+            impression,
+            radiologistName,
+            examDate
+        );
     }
 
     public void MakeConclusion(
