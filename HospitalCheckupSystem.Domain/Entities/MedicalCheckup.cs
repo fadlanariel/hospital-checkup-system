@@ -12,9 +12,10 @@ public class MedicalCheckup
     public VitalSigns? Vitals { get; private set; }
     public Anamnesis? Anamnesis { get; private set; }
     public PhysicalExam? PhysicalExam { get; private set; }
+    public RadiologyResult? Radiology { get; private set; }
+    public EkgResult? Ekg { get; private set; }
     public List<LabResultItem> LabResults { get; private set; } = new();
     public MedicalConclusion? Conclusion { get; private set; }
-    public RadiologyResult? Radiology { get; private set; }
 
     public bool IsFinished { get; private set; }
 
@@ -156,6 +157,27 @@ public class MedicalCheckup
         );
     }
 
+    public void RecordEkg(
+        string rhythm,
+        int heartRate,
+        string axis,
+        string impression,
+        string doctorName,
+        DateTime examDate)
+    {
+        if (IsFinished)
+            throw new InvalidOperationException("Cannot modify finished checkup");
+
+        Ekg = new EkgResult(
+            rhythm,
+            heartRate,
+            axis,
+            impression,
+            doctorName,
+            examDate
+        );
+    }
+
     public void MakeConclusion(
         FitnessStatus fitnessStatus,
         string diagnosis,
@@ -174,5 +196,4 @@ public class MedicalCheckup
 
         IsFinished = true;
     }
-
 }
