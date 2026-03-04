@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using HospitalCheckupSystem.Application.UseCases;
 using HospitalCheckupSystem.Domain.Entities;
 using HospitalCheckupSystem.Domain.Interfaces;
 using Moq;

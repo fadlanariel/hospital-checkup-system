@@ -33,6 +33,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
                     AddAnamnesisSection(col, report);
                     AddPhysicalExamSection(col, report);
                     AddRadiologySection(col, report);
+                    AddEkgSection(col, report);
                     AddLabSection(col, report);
                     AddConclusionSection(col, report);
                 });
@@ -226,6 +227,47 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         });
     }
 
+    private void AddEkgSection(ColumnDescriptor col, MedicalCheckupReportDto report)
+    {
+        if (report.Ekg == null) return;
+
+        var ekg = report.Ekg;
+
+        col.Item().PaddingTop(15);
+
+        col.Item().Text("PEMERIKSAAN EKG")
+            .Bold()
+            .FontSize(12);
+
+        col.Item().PaddingTop(8);
+
+        col.Item().Table(table =>
+        {
+            table.ColumnsDefinition(columns =>
+            {
+                columns.RelativeColumn(1);
+                columns.RelativeColumn(3);
+            });
+
+            void Row(string label, string value)
+            {
+                table.Cell().PaddingVertical(3).Text(label).SemiBold();
+                table.Cell().PaddingVertical(3).Text(value);
+            }
+
+            Row("Tanggal", ekg.ExamDate.ToString("dd MMMM yyyy"));
+            Row("Rhythm", ekg.Rhythm);
+            Row("Heart Rate", $"{ekg.HeartRate} bpm");
+            Row("Axis", ekg.Axis);
+
+            table.Cell().PaddingVertical(3).Text("Impression").SemiBold();
+            table.Cell().PaddingVertical(3)
+                .Text(ekg.Impression)
+                .Bold();
+
+            Row("Dokter Pemeriksa", ekg.DoctorName);
+        });
+    }
     private void AddConclusionSection(ColumnDescriptor col, MedicalCheckupReportDto report)
     {
         if (report.Conclusion == null) return;
