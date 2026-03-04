@@ -16,12 +16,16 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
             {
                 page.Margin(30);
 
-                page.Header()
-                    .PaddingBottom(15)
-                    .Text("MEDICAL CHECKUP REPORT")
-                    .SemiBold()
-                    .FontSize(20)
-                    .AlignCenter();
+                page.Header().Column(header =>
+                {
+                    header.Item().AlignCenter().Text("MEDICAL CHECKUP REPORT")
+                        .SemiBold().FontSize(20);
+
+                    header.Item().AlignCenter().Text("General Medical Examination")
+                        .FontSize(11);
+
+                    header.Item().PaddingTop(5).LineHorizontal(1);
+                });
 
 
                 page.Content().Column(col =>
@@ -39,16 +43,33 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
                 });
 
                 page.Footer()
-                    .AlignRight()
-                    .Text($"Generated on {DateTime.Now:dd MMM yyyy}");
+                    .AlignCenter()
+                    .Text(text =>
+                    {
+                        text.Span("Confidential Medical Document - ");
+                        text.Span($"Generated on {DateTime.Now:dd MMM yyyy}")
+                            .SemiBold();
+                    });
             });
         }).GeneratePdf();
+    }
+    private void SectionTitle(ColumnDescriptor col, string title)
+    {
+        col.Item().PaddingTop(15);
+
+        col.Item().Text(title)
+            .Bold()
+            .FontSize(14);
+
+        col.Item().LineHorizontal(0.5f)
+            .LineColor(Colors.Grey.Lighten2);
+
+        col.Item().PaddingTop(5);
     }
 
     private void AddPatientSection(ColumnDescriptor col, MedicalCheckupReportDto report)
     {
-        col.Item().Text("PATIENT INFORMATION").Bold().FontSize(14);
-
+        SectionTitle(col, "PATIENT INFORMATION");
         col.Item().Table(table =>
         {
             table.ColumnsDefinition(columns =>
@@ -79,7 +100,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         if (report.Vitals == null) return;
 
         col.Item().PaddingTop(10);
-        col.Item().Text("VITAL SIGNS").Bold().FontSize(14);
+        SectionTitle(col, "VITAL SIGNS");
 
         var heightMeter = (double)report.Vitals.Height / 100.0;
         var bmi = heightMeter > 0
@@ -92,22 +113,24 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
             {
                 columns.RelativeColumn();
                 columns.RelativeColumn();
+                columns.RelativeColumn();
             });
 
-            table.Cell().Text("Height:");
+            table.Cell().Text("Height").SemiBold();
+            table.Cell().Text("Weight").SemiBold();
+            table.Cell().Text("BMI").SemiBold();
+
             table.Cell().Text($"{report.Vitals.Height} cm");
-
-            table.Cell().Text("Weight:");
             table.Cell().Text($"{report.Vitals.Weight} kg");
-
-            table.Cell().Text("Blood Pressure:");
-            table.Cell().Text($"{report.Vitals.Systolic}/{report.Vitals.Diastolic} mmHg");
-
-            table.Cell().Text("Pulse:");
-            table.Cell().Text($"{report.Vitals.Pulse} bpm");
-
-            table.Cell().Text("BMI:");
             table.Cell().Text($"{bmi:F2}");
+
+            table.Cell().Text("Blood Pressure").SemiBold();
+            table.Cell().Text("Pulse").SemiBold();
+            table.Cell().Text("");
+
+            table.Cell().Text($"{report.Vitals.Systolic}/{report.Vitals.Diastolic} mmHg");
+            table.Cell().Text($"{report.Vitals.Pulse} bpm");
+            table.Cell().Text("");
         });
     }
 
@@ -116,15 +139,16 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         if (report.Anamnesis == null) return;
 
         col.Item().PaddingTop(10);
-        col.Item().Text("MEDICAL HISTORY (ANAMNESIS)").Bold().FontSize(14);
+        SectionTitle(col, "MEDICAL HISTORY (ANAMNESIS)");
 
-        col.Item().PaddingBottom(-5).Text($"Complaints: {report.Anamnesis.Complaints}");
-        col.Item().PaddingBottom(-5).Text($"Past Illness: {report.Anamnesis.PastIllness}");
-        col.Item().PaddingBottom(-5).Text($"Family History: {report.Anamnesis.FamilyHistory}");
-        col.Item().PaddingBottom(-5).Text($"Allergies: {report.Anamnesis.Allergies}");
-        col.Item().PaddingBottom(-5).Text($"Smoking: {(report.Anamnesis.Smoking ? "Yes" : "No")}");
-        col.Item().PaddingBottom(-5).Text($"Alcohol: {(report.Anamnesis.Alcohol ? "Yes" : "No")}");
-        col.Item().PaddingBottom(-5).Text($"Work Hazards: {report.Anamnesis.WorkHazards}");
+        col.Spacing(3);
+        col.Item().Text($"Complaints: {report.Anamnesis.Complaints}");
+        col.Item().Text($"Past Illness: {report.Anamnesis.PastIllness}");
+        col.Item().Text($"Family History: {report.Anamnesis.FamilyHistory}");
+        col.Item().Text($"Allergies: {report.Anamnesis.Allergies}");
+        col.Item().Text($"Smoking: {(report.Anamnesis.Smoking ? "Yes" : "No")}");
+        col.Item().Text($"Alcohol: {(report.Anamnesis.Alcohol ? "Yes" : "No")}");
+        col.Item().Text($"Work Hazards: {report.Anamnesis.WorkHazards}");
     }
 
     private void AddPhysicalExamSection(ColumnDescriptor col, MedicalCheckupReportDto report)
@@ -132,15 +156,16 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         if (report.PhysicalExam == null) return;
 
         col.Item().PaddingTop(10);
-        col.Item().Text("PHYSICAL EXAMINATION").Bold().FontSize(14);
+        SectionTitle(col, "PHYSICAL EXAMINATION");
 
-        col.Item().PaddingBottom(-5).Text($"General Appearance: {report.PhysicalExam.GeneralAppearance}");
-        col.Item().PaddingBottom(-5).Text($"Eyes: {report.PhysicalExam.Eyes}");
-        col.Item().PaddingBottom(-5).Text($"ENT: {report.PhysicalExam.Ent}");
-        col.Item().PaddingBottom(-5).Text($"Heart: {report.PhysicalExam.Heart}");
-        col.Item().PaddingBottom(-5).Text($"Lungs: {report.PhysicalExam.Lungs}");
-        col.Item().PaddingBottom(-5).Text($"Abdomen: {report.PhysicalExam.Abdomen}");
-        col.Item().PaddingBottom(-5).Text($"Neurology: {report.PhysicalExam.Neurology}");
+        col.Spacing(3);
+        col.Item().Text($"General Appearance: {report.PhysicalExam.GeneralAppearance}");
+        col.Item().Text($"Eyes: {report.PhysicalExam.Eyes}");
+        col.Item().Text($"ENT: {report.PhysicalExam.Ent}");
+        col.Item().Text($"Heart: {report.PhysicalExam.Heart}");
+        col.Item().Text($"Lungs: {report.PhysicalExam.Lungs}");
+        col.Item().Text($"Abdomen: {report.PhysicalExam.Abdomen}");
+        col.Item().Text($"Neurology: {report.PhysicalExam.Neurology}");
     }
 
     private void AddLabSection(ColumnDescriptor col, MedicalCheckupReportDto report)
@@ -148,7 +173,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
         if (report.LabResults == null || !report.LabResults.Any()) return;
 
         col.Item().PaddingTop(10);
-        col.Item().Text("LABORATORY RESULTS").Bold().FontSize(14);
+        SectionTitle(col, "LABORATORY RESULTS");
 
         col.Item().Table(table =>
         {
@@ -162,10 +187,10 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
 
             table.Header(header =>
             {
-                header.Cell().Text("Test").Bold();
-                header.Cell().Text("Value").Bold();
-                header.Cell().Text("Normal Range").Bold();
-                header.Cell().Text("Status").Bold();
+                header.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Test").Bold();
+                header.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Value").Bold();
+                header.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Normal Range").Bold();
+                header.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Status").Bold();
             });
 
             foreach (var lab in report.LabResults)
@@ -176,8 +201,13 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
 
                 table.Cell().Text(lab.TestName);
                 table.Cell().Text($"{lab.Value} {lab.Unit}");
+
                 table.Cell().Text(normalRange);
-                table.Cell().Text(lab.IsNormal ? "Normal" : "Abnormal");
+
+                table.Cell()
+                    .Text(lab.IsNormal ? "Normal" : "Abnormal")
+                    .FontColor(lab.IsNormal ? Colors.Black : Colors.Red.Medium)
+                    .Bold();
             }
         });
     }
@@ -190,15 +220,11 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
 
         col.Item().PaddingTop(15);
 
-        col.Item().Text("I. PEMERIKSAAN PENUNJANG")
-            .Bold()
-            .FontSize(14);
+        SectionTitle(col, "SUPPORTING EXAMINATION");
 
         col.Item().PaddingTop(5);
 
-        col.Item().Text("Pemeriksaan Radiologi")
-            .Bold()
-            .FontSize(12);
+        SectionTitle(col, "RADIOLOGY EXAMINATION");
 
         col.Item().PaddingTop(8);
 
@@ -213,16 +239,19 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
             void Row(string label, string value)
             {
                 table.Cell().PaddingVertical(3).Text(label).SemiBold();
-                table.Cell().PaddingVertical(3).Text(value);
+                table.Cell().PaddingVertical(3).Text(value ?? "-");
             }
 
-            Row("Examination", radio.Examination);
-            Row("Tanggal", radio.ExamDate.ToString("dd MMMM yyyy"));
+            Row("Examination Type", radio.Examination);
+            Row("Examination Date", radio.ExamDate.ToString("dd MMMM yyyy"));
             Row("Findings", radio.Findings);
+
             table.Cell().PaddingVertical(3).Text("Impression").SemiBold();
-            table.Cell().PaddingVertical(3).Text(radio.Impression)
+            table.Cell().PaddingVertical(3)
+                .Text(radio.Impression ?? "-")
                 .Bold()
                 .FontColor(Colors.Red.Medium);
+
             Row("Radiologist", radio.RadiologistName);
         });
     }
@@ -235,9 +264,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
 
         col.Item().PaddingTop(15);
 
-        col.Item().Text("PEMERIKSAAN EKG")
-            .Bold()
-            .FontSize(12);
+        SectionTitle(col, "EKG EXAMINATION");
 
         col.Item().PaddingTop(8);
 
@@ -252,46 +279,62 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
             void Row(string label, string value)
             {
                 table.Cell().PaddingVertical(3).Text(label).SemiBold();
-                table.Cell().PaddingVertical(3).Text(value);
+                table.Cell().PaddingVertical(3).Text(value ?? "-");
             }
 
-            Row("Tanggal", ekg.ExamDate.ToString("dd MMMM yyyy"));
-            Row("Rhythm", ekg.Rhythm);
+            Row("Examination Date", ekg.ExamDate.ToString("dd MMMM yyyy"));
+            Row("Heart Rhythm", ekg.Rhythm);
             Row("Heart Rate", $"{ekg.HeartRate} bpm");
-            Row("Axis", ekg.Axis);
+            Row("Cardiac Axis", ekg.Axis);
 
             table.Cell().PaddingVertical(3).Text("Impression").SemiBold();
             table.Cell().PaddingVertical(3)
-                .Text(ekg.Impression)
+                .Text(ekg.Impression ?? "-")
                 .Bold();
 
-            Row("Dokter Pemeriksa", ekg.DoctorName);
+            Row("Examining Doctor", ekg.DoctorName);
         });
     }
+
     private void AddConclusionSection(ColumnDescriptor col, MedicalCheckupReportDto report)
     {
         if (report.Conclusion == null) return;
 
         col.Item().PaddingTop(10);
-        col.Item().Text("FINAL CONCLUSION").Bold().FontSize(14);
+        SectionTitle(col, "FINAL CONCLUSION");
 
-        col.Item().Text($"Diagnosis: {report.Conclusion.Diagnosis}");
-        col.Item().Text($"Recommendation: {report.Conclusion.Recommendation}");
+        col.Item().PaddingTop(5).Text("Diagnosis").Bold();
+        col.Item().Text(report.Conclusion.Diagnosis);
 
-        col.Item().PaddingTop(10);
+        col.Item().PaddingTop(5).Text("Recommendation").Bold();
+        col.Item().Text(report.Conclusion.Recommendation);
 
-        col.Item().Text("FINAL STATUS:")
-            .Bold();
+        col.Item().PaddingTop(15);
 
-        col.Item().Text(report.Conclusion.FitnessStatus.ToString())
-            .Bold()
-            .FontSize(14);
+        col.Item().Background(Colors.Grey.Lighten4)
+            .Padding(10)
+            .Column(status =>
+            {
+                status.Item().Text("FITNESS STATUS")
+                    .Bold();
 
-        col.Item().PaddingTop(20);
+                status.Item().Text(report.Conclusion.FitnessStatus.ToString())
+                    .Bold()
+                    .FontSize(16)
+                    .FontColor(Colors.Blue.Darken2);
+            });
+
+        col.Item().PaddingTop(30);
+
         col.Item().AlignRight().Column(signature =>
         {
-            signature.Item().Text($"Jakarta, {DateTime.Now:dd MMM yyyy}");
-            signature.Item().Text("Doctor");
+            signature.Item().Text($"Jakarta, {DateTime.Now:dd MMMM yyyy}");
+
+            signature.Item().PaddingTop(40); // space for real signature
+
+            signature.Item().Text("Dr. __________________________")
+                .Bold();
+
             signature.Item().Text("Medical Coordinator");
         });
     }
