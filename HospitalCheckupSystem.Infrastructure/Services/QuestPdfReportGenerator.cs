@@ -32,6 +32,7 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
                     AddVitalSection(col, report);
                     AddAnamnesisSection(col, report);
                     AddPhysicalExamSection(col, report);
+                    AddRadiologySection(col, report);
                     AddLabSection(col, report);
                     AddConclusionSection(col, report);
                 });
@@ -177,6 +178,51 @@ public class QuestPdfReportGenerator : IPdfReportGenerator
                 table.Cell().Text(normalRange);
                 table.Cell().Text(lab.IsNormal ? "Normal" : "Abnormal");
             }
+        });
+    }
+
+    private void AddRadiologySection(ColumnDescriptor col, MedicalCheckupReportDto report)
+    {
+        if (report.Radiology == null) return;
+
+        var radio = report.Radiology;
+
+        col.Item().PaddingTop(15);
+
+        col.Item().Text("I. PEMERIKSAAN PENUNJANG")
+            .Bold()
+            .FontSize(14);
+
+        col.Item().PaddingTop(5);
+
+        col.Item().Text("Pemeriksaan Radiologi")
+            .Bold()
+            .FontSize(12);
+
+        col.Item().PaddingTop(8);
+
+        col.Item().Table(table =>
+        {
+            table.ColumnsDefinition(columns =>
+            {
+                columns.RelativeColumn(1);
+                columns.RelativeColumn(3);
+            });
+
+            void Row(string label, string value)
+            {
+                table.Cell().PaddingVertical(3).Text(label).SemiBold();
+                table.Cell().PaddingVertical(3).Text(value);
+            }
+
+            Row("Examination", radio.Examination);
+            Row("Tanggal", radio.ExamDate.ToString("dd MMMM yyyy"));
+            Row("Findings", radio.Findings);
+            table.Cell().PaddingVertical(3).Text("Impression").SemiBold();
+            table.Cell().PaddingVertical(3).Text(radio.Impression)
+                .Bold()
+                .FontColor(Colors.Red.Medium);
+            Row("Radiologist", radio.RadiologistName);
         });
     }
 

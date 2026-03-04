@@ -16,5 +16,6 @@ public class MedicalCheckupReportDto
     public AnamnesisDto? Anamnesis { get; set; }
     public PhysicalExamDto? PhysicalExam { get; set; }
     public List<LabResultItemDto> LabResults { get; set; } = new();
+    public RadiologyDto? Radiology { get; set; }
     public MedicalConclusionDto Conclusion { get; set; } = default!;
 }
